@@ -40,8 +40,12 @@ Before starting, ensure you have the following:
    sudo apt update
    sudo apt install jenkins -y
    ```
-
-2. **Add Jenkins User to Docker Group:**
+2. **Access Jenkins: Open http://<EC2_PUBLIC_IP>:8080 in your browser. Use the initial admin password from:**
+    ```bash
+    sudo cat /var/lib/jenkins/secrets/initialAdminPassword
+    ```
+    
+3. **Add Jenkins User to Docker Group:**
     ```bash
     sudo usermod -aG docker jenkins
     ```
