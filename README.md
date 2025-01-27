@@ -17,7 +17,7 @@ Before starting, ensure you have the following:
 
 ---
 
-## Step 1: Install Jenkins on Your EC2 Instance
+## Step 1: Install Docker on Your EC2 Instance
 
 1. **Docker Installed**:
    - Install Docker and configure it:
@@ -32,3 +32,10 @@ Before starting, ensure you have the following:
 1. **Install Java**:
    ```bash
    sudo apt install openjdk-11-jdk -y
+   curl -fsSL https://pkg.jenkins.io/debian-stable/jenkins.io.key | sudo tee \
+  /usr/share/keyrings/jenkins-keyring.asc > /dev/null
+  echo deb [signed-by=/usr/share/keyrings/jenkins-keyring.asc] \
+  https://pkg.jenkins.io/debian-stable binary/ | sudo tee \
+  /etc/apt/sources.list.d/jenkins.list > /dev/null
+  sudo apt update
+  sudo apt install jenkins -y
