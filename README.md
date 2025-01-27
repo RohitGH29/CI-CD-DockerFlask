@@ -1,142 +1,190 @@
 # Flask Application Deployment Using Jenkins CI/CD Pipeline and Docker
 
-This project demonstrates how to set up a CI/CD pipeline using Jenkins to deploy a Flask application on Docker. The pipeline includes stages such as code checkout, installing dependencies, building a Docker image, pushing it to Docker Hub, and deploying it on Docker. This project is designed to help others understand the deployment process step by step.
+This project demonstrates setting up a CI/CD pipeline using Jenkins to deploy a Flask application on Docker. The pipeline includes stages for code checkout, installing dependencies, building a Docker image, pushing it to Docker Hub, and deploying it on Docker. The purpose is to provide a step-by-step guide to deploying Flask applications effectively.
 
 ---
 
 ## Prerequisites
 
-Before starting, ensure you have the following:
+Before proceeding, ensure you have the following:
 
-1. **EC2 Instance**:
-   - Launch an Ubuntu EC2 instance.
-   - Open ports `8080` for Jenkins and `5000` for the Flask application.
+1. **AWS EC2 Instance**:
+   - Launch an **Ubuntu** EC2 instance.
+   - Open the following ports in the security group:
+     - **8080**: For Jenkins access.
+     - **5000**: For Flask application access.
 
-
-
+2. **Required Tools**:
+   - Docker
+   - Python 3.x
+   - Jenkins
 
 ---
 
-## Step 1: Install Tools on Your EC2 Instance
+## Step 1: Install Required Tools on Your EC2 Instance
 
-1. **Docker Installed**:
-   - Install Docker and configure it:
-     ```bash
-     sudo apt update
-     sudo apt install docker.io -y
-     sudo usermod -aG docker ubuntu && newgrp docker
-     ```
-2. **Install Python:**
-     ```bash
-     sudo apt install python3-venv -y
-     ```
-
-
-## Step 2: Install Jenkins on Your EC2 Instance
-
-1. **Install**:
+### Install Docker
+1. Update the system and install Docker:
    ```bash
-    sudo apt update -y
-    sudo apt install fontconfig openjdk-17-jre -y
-
-    sudo wget -O /usr/share/keyrings/jenkins-keyring.asc \
-    https://pkg.jenkins.io/debian-stable/jenkins.io-2023.key
-  
-    echo "deb [signed-by=/usr/share/keyrings/jenkins-keyring.asc]" \
-    https://pkg.jenkins.io/debian-stable binary/ | sudo tee \
-    /etc/apt/sources.list.d/jenkins.list > /dev/null
-  
-    sudo apt-get update -y
-    sudo apt-get install jenkins -y
+   sudo apt update
+   sudo apt install docker.io -y
+   sudo usermod -aG docker ubuntu && newgrp docker
    ```
- *Access Jenkins: Open http://<EC2_PUBLIC_IP>:8080 in your browser.*
 
-2. **Use the initial admin password from:**
-    ```bash
-    sudo cat /var/lib/jenkins/secrets/initialAdminPassword
-    ```
-    
-3. **Add Jenkins User to Docker Group:**
-    ```bash
-    sudo usermod -aG docker jenkins
-    ```
+2. Verify Docker installation:
+   ```bash
+   docker --version
+   ```
 
-## Step 3 : Configure Jenkins
+### Install Python
+1. Install Python and the `venv` module:
+   ```bash
+   sudo apt install python3-venv -y
+   ```
 
-1. **Install Plugins:**
-    -Docker
-    -Pipeline: Stage View
+### Install Jenkins
+1. Update the system and install Jenkins:
+   ```bash
+   sudo apt update -y
+   sudo apt install fontconfig openjdk-17-jre -y
+   
+   sudo wget -O /usr/share/keyrings/jenkins-keyring.asc \
+   https://pkg.jenkins.io/debian-stable/jenkins.io-2023.key
+   
+   echo "deb [signed-by=/usr/share/keyrings/jenkins-keyring.asc]" \
+   https://pkg.jenkins.io/debian-stable binary/ | sudo tee \
+   /etc/apt/sources.list.d/jenkins.list > /dev/null
+   
+   sudo apt-get update -y
+   sudo apt-get install jenkins -y
+   ```
 
-2. **Create Credentials:**
-Add Docker Hub credentials (username and token/password) under Manage Jenkins > Credentials.
+2. Start Jenkins and check its status:
+   ```bash
+   sudo systemctl start jenkins
+   sudo systemctl status jenkins
+   ```
 
-3. **Create a New Pipeline Job in Jenkins:**
-    Go to Jenkins Dashboard > New Item > Pipeline > OK.
+3. Access Jenkins:
+   - Open your browser and navigate to `http://<EC2_PUBLIC_IP>:8080`.
 
- *Add the Pipeline Script: Paste the following script into the pipeline definition:*
- ```bash
- pipeline {
-    agent any
-    environment {
-        DOCKER_IMAGE = 'your-dockerhub-username/flask-app'
-    }
-    stages {
-        stage('Git: Code Checkout') {
-            steps {
-                script{
-                    code_checkout("https://github.com/RohitGH29/CI-CD-DockerFlask.git","main")
-                }
-            }
-        }
-        stage('Install Dependencies') {
-            steps {
-                echo 'Installing dependencies...'
-                sh '''
-                    python3 -m venv venv
-                    . venv/bin/activate
-                    pip install -r requirements.txt
-                '''
-            }
-        }
-        stage('Build Docker Image') {
-            steps {
-                echo 'Building Docker image...'
-                sh 'docker build -t ${DOCKER_IMAGE} .'
-            }
-        }
-        stage('Push to Docker Hub') {
-            steps {
-                echo 'Pushing Docker image to Docker Hub...'
-                withCredentials([usernamePassword(credentialsId: 'docker-hub-creds', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
-                    sh 'echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin'
-                }
-                sh 'docker push ${DOCKER_IMAGE}'
-            }
-        }
-        stage('Deploy on Docker') {
-            steps {
-                echo 'Deploying application...'
-                sh '''
-                docker stop flask-app || true
-                docker rm flask-app || true
-                docker run -d -p 5000:5000 --name flask-app ${DOCKER_IMAGE}
-                '''
-            }
-        }
-    }
-}
-```
+4. Retrieve the initial admin password:
+   ```bash
+   sudo cat /var/lib/jenkins/secrets/initialAdminPassword
+   ```
 
-## Step 4: Run the Pipeline
+5. Add Jenkins to the Docker group:
+   ```bash
+   sudo usermod -aG docker jenkins
+   ```
+
+---
+
+## Step 2: Configure Jenkins
+
+### Install Required Plugins
+1. Login to Jenkins and navigate to **Manage Jenkins > Manage Plugins**.
+2. Install the following plugins:
+   - **Docker Pipeline**
+   - **Pipeline: Stage View**
+
+### Add Credentials
+1. Navigate to **Manage Jenkins > Credentials**.
+2. Add Docker Hub credentials with:
+   - **ID**: `docker-hub-creds`
+   - **Username**: Your Docker Hub username.
+   - **Password/Token**: Your Docker Hub password or access token.
+
+### Create a New Pipeline Job
+1. Go to the Jenkins dashboard and create a new item:
+   - **Name**: `FlaskAppPipeline`
+   - **Type**: `Pipeline`
+
+2. Add the following pipeline script in the **Pipeline Definition**:
+
+   ```groovy
+   pipeline {
+       agent any
+       environment {
+           DOCKER_IMAGE = 'your-dockerhub-username/flask-app'
+       }
+       stages {
+           stage('Git: Code Checkout') {
+               steps {
+                   echo 'Checking out code...'
+                   script {
+                       checkout scm: [$class: 'GitSCM', branches: [[name: 'main']],
+                           userRemoteConfigs: [[url: 'https://github.com/RohitGH29/CI-CD-DockerFlask.git']]]
+                   }
+               }
+           }
+           stage('Install Dependencies') {
+               steps {
+                   echo 'Installing dependencies...'
+                   sh '''
+                       python3 -m venv venv
+                       . venv/bin/activate
+                       pip install -r requirements.txt
+                   '''
+               }
+           }
+           stage('Build Docker Image') {
+               steps {
+                   echo 'Building Docker image...'
+                   sh 'docker build -t ${DOCKER_IMAGE} .'
+               }
+           }
+           stage('Push to Docker Hub') {
+               steps {
+                   echo 'Pushing Docker image to Docker Hub...'
+                   withCredentials([usernamePassword(credentialsId: 'docker-hub-creds', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
+                       sh 'echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin'
+                   }
+                   sh 'docker push ${DOCKER_IMAGE}'
+               }
+           }
+           stage('Deploy on Docker') {
+               steps {
+                   echo 'Deploying application...'
+                   sh '''
+                       docker stop flask-app || true
+                       docker rm flask-app || true
+                       docker run -d -p 5000:5000 --name flask-app ${DOCKER_IMAGE}
+                   '''
+               }
+           }
+       }
+   }
+   ```
+
+---
+
+## Step 3: Run the Pipeline
+
 1. Trigger the pipeline from Jenkins.
-2. The pipeline will:
-    Checkout the Flask application code.
-    Install dependencies from requirements.txt.
-    Build a Docker image.
-    Push the image to Docker Hub.
-    Deploy the Flask application as a Docker container.
+2. Monitor the pipeline stages:
+   - **Code Checkout**: Fetches the Flask app code from GitHub.
+   - **Install Dependencies**: Installs Python dependencies.
+   - **Build Docker Image**: Builds a Docker image for the Flask app.
+   - **Push to Docker Hub**: Uploads the image to Docker Hub.
+   - **Deploy on Docker**: Runs the Flask app as a Docker container.
 
-## Step 5: Verify Deployment
-1. Open your browser and visit: http://<EC2_PUBLIC_IP>:5000.
-2. You should see the message: "Welcome! You successfully deployed the Flask application on Docker using Jenkins pipeline.
-"    
+---
+
+## Step 4: Verify Deployment
+
+1. Open your browser and navigate to `http://<EC2_PUBLIC_IP>:5000`.
+2. You should see the message:
+   ```
+   Welcome! You successfully deployed the Flask application on Docker using Jenkins pipeline.
+   ```
+
+---
+
+## Additional Notes
+
+- Ensure your `requirements.txt` file is updated with all necessary dependencies for the Flask app.
+- Replace `your-dockerhub-username` in the pipeline script with your actual Docker Hub username.
+- For security, restrict Jenkins credentials visibility to relevant jobs only.
+
+---
