@@ -12,23 +12,22 @@ Before starting, ensure you have the following:
    - Launch an Ubuntu EC2 instance.
    - Open ports `8080` for Jenkins and `5000` for the Flask application.
 
-2. **Basic Tools**:
-   - Update and install essential tools:
-     ```bash
-     sudo apt update
-     sudo apt install -y git curl python3 python3-pip
-     ```
 
-3. **Docker Installed**:
-   - Install Docker and configure it:
-     ```bash
-     sudo apt install docker.io -y
-     sudo usermod -aG docker ubuntu && newgrp docker
-     ```
+
 
 ---
 
 ## Step 1: Install Jenkins on Your EC2 Instance
+
+1. **Docker Installed**:
+   - Install Docker and configure it:
+     ```bash
+     sudo apt update
+     sudo apt install docker.io -y
+     sudo usermod -aG docker ubuntu && newgrp docker
+     ```
+
+## Step 2: Install Jenkins on Your EC2 Instance
 
 1. **Install Java**:
    ```bash
