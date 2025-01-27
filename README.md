@@ -42,7 +42,8 @@ Before starting, ensure you have the following:
    ```
 
 2. **Add Jenkins User to Docker Group:**
-    ```sudo usermod -aG docker jenkins
+    ```bash
+    sudo usermod -aG docker jenkins
     ```
 
 ## Step 3 : Configure Jenkins
