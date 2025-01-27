@@ -52,8 +52,7 @@ Blue Ocean (optional, for a modern UI)
 2. **Create Credentials:**
 Add Docker Hub credentials (username and token/password) under Manage Jenkins > Credentials.
 
-3. **Write the Jenkins Pipeline Script**
- *Create a New Pipeline Job in Jenkins:*
+3. **Create a New Pipeline Job in Jenkins:**
     Go to Jenkins Dashboard > New Item > Pipeline > OK.
 
  *Add the Pipeline Script: Paste the following script into the pipeline definition:*
