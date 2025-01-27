@@ -126,3 +126,17 @@ Add Docker Hub credentials (username and token/password) under Manage Jenkins > 
     }
 }
 ```
+
+## Step 4: Run the Pipeline
+1. Trigger the pipeline from Jenkins.
+2. The pipeline will:
+    Checkout the Flask application code.
+    Install dependencies from requirements.txt.
+    Build a Docker image.
+    Push the image to Docker Hub.
+    Deploy the Flask application as a Docker container.
+
+## Step 5: Verify Deployment
+1. Open your browser and visit: http://<EC2_PUBLIC_IP>:5000.
+2. You should see the message: "Welcome! You successfully deployed the Flask application on Docker using Jenkins pipeline.
+"    
