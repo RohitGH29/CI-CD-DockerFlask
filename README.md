@@ -17,7 +17,7 @@ Before starting, ensure you have the following:
 
 ---
 
-## Step 1: Install Docker on Your EC2 Instance
+## Step 1: Install Tools on Your EC2 Instance
 
 1. **Docker Installed**:
    - Install Docker and configure it:
@@ -26,6 +26,11 @@ Before starting, ensure you have the following:
      sudo apt install docker.io -y
      sudo usermod -aG docker ubuntu && newgrp docker
      ```
+2. **Install Python:**
+     ```bash
+     sudo apt install python3-venv -y
+     ```
+
 
 ## Step 2: Install Jenkins on Your EC2 Instance
 
@@ -59,8 +64,8 @@ Before starting, ensure you have the following:
 ## Step 3 : Configure Jenkins
 
 1. **Install Plugins:**
--Docker
--Pipeline: Stage View
+    -Docker
+    -Pipeline: Stage View
 
 2. **Create Credentials:**
 Add Docker Hub credentials (username and token/password) under Manage Jenkins > Credentials.
@@ -69,7 +74,8 @@ Add Docker Hub credentials (username and token/password) under Manage Jenkins > 
     Go to Jenkins Dashboard > New Item > Pipeline > OK.
 
  *Add the Pipeline Script: Paste the following script into the pipeline definition:*
- ```pipeline {
+ ```bash
+ pipeline {
     agent any
     environment {
         DOCKER_IMAGE = 'your-dockerhub-username/flask-app'
@@ -85,7 +91,11 @@ Add Docker Hub credentials (username and token/password) under Manage Jenkins > 
         stage('Install Dependencies') {
             steps {
                 echo 'Installing dependencies...'
-                sh 'pip install -r requirements.txt'
+                sh '''
+                    python3 -m venv venv
+                    . venv/bin/activate
+                    pip install -r requirements.txt
+                '''
             }
         }
         stage('Build Docker Image') {
