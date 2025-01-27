@@ -41,6 +41,10 @@ Before starting, ensure you have the following:
    sudo apt install jenkins -y
    ```
 
+2. **Add Jenkins User to Docker Group:**
+    ```sudo usermod -aG docker jenkins
+    ```
+
 ## Step 3 : Configure Jenkins
 
 1. **Install Plugins:**
