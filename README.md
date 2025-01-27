@@ -59,10 +59,8 @@ Before starting, ensure you have the following:
 ## Step 3 : Configure Jenkins
 
 1. **Install Plugins:**
-Docker Pipeline
-Git Plugin
-Pipeline: Multibranch
-Blue Ocean (optional, for a modern UI)
+-Docker
+-Pipeline: Stage View
 
 2. **Create Credentials:**
 Add Docker Hub credentials (username and token/password) under Manage Jenkins > Credentials.
