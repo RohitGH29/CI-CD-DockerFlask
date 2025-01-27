@@ -44,7 +44,9 @@ Before starting, ensure you have the following:
     sudo apt-get update -y
     sudo apt-get install jenkins -y
    ```
-2. **Access Jenkins: Open http://<EC2_PUBLIC_IP>:8080 in your browser. Use the initial admin password from:**
+ *Access Jenkins: Open http://<EC2_PUBLIC_IP>:8080 in your browser.*
+
+   **Use the initial admin password from:**
     ```bash
     sudo cat /var/lib/jenkins/secrets/initialAdminPassword
     ```
