@@ -46,7 +46,7 @@ Before starting, ensure you have the following:
    ```
  *Access Jenkins: Open http://<EC2_PUBLIC_IP>:8080 in your browser.*
 
-   **Use the initial admin password from:**
+2. **Use the initial admin password from:**
     ```bash
     sudo cat /var/lib/jenkins/secrets/initialAdminPassword
     ```
