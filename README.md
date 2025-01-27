@@ -9,7 +9,7 @@ This project demonstrates setting up a CI/CD pipeline using Jenkins to deploy a 
 Before proceeding, ensure you have the following:
 
 1. **AWS EC2 Instance**:
-   - Launch an **Ubuntu** EC2 instance.
+   - Launch an **Ubuntu** EC2 instance (Type t3.medium).
    - Open the following ports in the security group:
      - **8080**: For Jenkins access.
      - **5000**: For Flask application access.
