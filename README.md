@@ -76,6 +76,7 @@ Before proceeding, ensure you have the following:
 5. Add Jenkins to the Docker group:
    ```bash
    sudo usermod -aG docker jenkins
+   sudo systemctl restart jenkins
    ```
 
 ---
