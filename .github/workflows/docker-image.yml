@@ -48,7 +48,7 @@ jobs:
     steps:
       # SSH into the EC2 instance and deploy the Docker container
       - name: Deploy to EC2 instance
-        uses: appleboy/ssh-action@v1
+        uses: appleboy/ssh-action@v0.1.7
         with:
           host: 13.48.249.104  # Public IP or DNS of the EC2 instance
           username: ubuntu  # SSH username (e.g., "ubuntu" for Ubuntu AMI)
