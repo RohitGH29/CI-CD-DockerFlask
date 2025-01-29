@@ -29,7 +29,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v4
         with:
-          images: ${{ secrets.DOCKER_HUB_USERNAME }}/rohit055428181
+          images: ${{ secrets.DOCKER_HUB_USERNAME }}/flaskCICD
 
       # Build and push the Docker image
       - name: Build and push Docker image
