@@ -55,7 +55,7 @@ jobs:
           key: ${{ secrets.EC2_SSH_KEY }}  # SSH private key
           script: |
             # Pull the latest Docker image
-            docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/${{ env.DOCKER_REPO_NAME }}:latest
+            docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/${{ env.DOCKER_REPO_NAME }}:main
 
             # Stop and remove the existing container (if any)
             docker stop your-container-name || true
@@ -65,4 +65,4 @@ jobs:
             docker run -d \
               --name flask \
               -p 5000:5000 \  # Map port 80 on the host to port 80 in the container
-              ${{ secrets.DOCKER_HUB_USERNAME }}/${{ env.DOCKER_REPO_NAME }}:latest
+              ${{ secrets.DOCKER_HUB_USERNAME }}/${{ env.DOCKER_REPO_NAME }}:main
