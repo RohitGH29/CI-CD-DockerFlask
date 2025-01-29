@@ -3,6 +3,7 @@ name: Docker Build, Push, and Deploy to EC2
 # Define global environment variables
 env:
   DOCKER_REPO_NAME: flaskci  # Define your repository name here
+  CONTAINER_NAME: flask
 
 on:
   push:
@@ -58,11 +59,11 @@ jobs:
             docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/${{ env.DOCKER_REPO_NAME }}:main
 
             # Stop and remove the existing container (if any)
-            docker stop your-container-name || true
-            docker rm your-container-name || true
+            docker stop ${{ env.CONTAINER_NAME }} || true
+            docker rm ${{ env.CONTAINER_NAME }} || true
 
             # Run the new container
             docker run -d \
-              --name flask \
+              --name ${{ env.CONTAINER_NAME }} \
               -p 5000:5000 \  # Map port 80 on the host to port 80 in the container
               ${{ secrets.DOCKER_HUB_USERNAME }}/${{ env.DOCKER_REPO_NAME }}:main
