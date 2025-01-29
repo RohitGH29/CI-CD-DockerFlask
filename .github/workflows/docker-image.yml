@@ -51,8 +51,8 @@ jobs:
       - name: Deploy to EC2 instance
         uses: appleboy/ssh-action@v0.1.7
         with:
-          host: 13.48.249.104  # Public IP or DNS of the EC2 instance
-          username: ubuntu  # SSH username (e.g., "ubuntu" for Ubuntu AMI)
+          host: ${{ secrets.EC2_HOST }}  # Public IP or DNS of the EC2 instance
+          username: ${{ secrets.EC2_USERNAME }}  # SSH username (e.g., "ubuntu" for Ubuntu AMI)
           key: ${{ secrets.EC2_SSH_KEY }}  # SSH private key
           script: |
             # Pull the latest Docker image
